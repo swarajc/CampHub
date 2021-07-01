@@ -17,18 +17,35 @@ const port = process.env.PORT;
 var campgroundRoutes = require("./routes/campgrounds"),
   indexRoutes = require("./routes/index");
 
-const { MongoClient } = require("mongodb");
-let uri = process.env.ATLAS_URI;
+let uri = process.env.ATLAS_URI,
+  connection = mongoose.connection;
 
-const client = new MongoClient(uri, {
+let options = {
   useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  autoIndex: false, // Don't build indexes
+  reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
+  reconnectInterval: 500, // Reconnect every 500ms
+  poolSize: 10, // Maintain up to 10 socket connections
+  // If not connected, return errors immediately rather than waiting for reconnect
+  bufferMaxEntries: 0,
+  connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  family: 4, // Use IPv4, skip trying IPv6
   useUnifiedTopology: true,
-});
-client.connect((err) => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
+};
+
+mongoose.connect(uri, options);
+
+connection
+  .on("error", console.log)
+  .on("disconnected", () => {
+    console.log("Mongoose default connection is disconnected");
+  })
+  .once("open", () => {
+    console.log("MongoDB Connected!");
+  });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
