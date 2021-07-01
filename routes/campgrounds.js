@@ -27,7 +27,10 @@ router.post("/", middleware.isLoggedIn, function(req, res){
         id: req.user._id,
         username: req.user.username
     }
-    var newCampground = {name: name, price: price, image: image, description: desc, author:author}
+    var location = req.body.location;
+    var maxCapacity = req.body.maxCapacity;
+    var area = req.body.area;
+    var newCampground = {name: name, price: price, image: image, description: desc, author:author, location: location, maxCapacity: maxCapacity, area: area}
     // Create a new campground and save to DB
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
@@ -92,4 +95,3 @@ router.delete("/:id",middleware.checkCampgroundOwnership, function(req, res){
 
 
 module.exports = router;
-

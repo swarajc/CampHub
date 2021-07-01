@@ -13,3 +13,20 @@
 #delete-form {
     display: inline;
 }
+
+.register-block {
+    padding: 2%;
+}
+
+.form-item {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+body{
+    background-color: #1c291f;
+}
+
+h1, .navbar, .lead{
+    color: gainsboro;
+}

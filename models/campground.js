@@ -11,13 +11,10 @@ var campgroundSchema = new mongoose.Schema({
          ref: "User"
       },
       username: String
-   },
-   comments: [
-      {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "Comment"
-      }
-   ]
+   }, 
+   location: String, 
+   maxCapacity: Number, 
+   area: Number
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);
