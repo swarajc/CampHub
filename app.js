@@ -10,14 +10,26 @@ var express = require("express"),
   User = require("./models/user"),
   seedDB = require("./seeds");
 
+require("dotenv").config();
+const port = process.env.PORT;
+
 //requiring routes
 var campgroundRoutes = require("./routes/campgrounds"),
   indexRoutes = require("./routes/index");
 
-mongoose.connect("mongodb://localhost/camp_hub_v13", {
+const { MongoClient } = require("mongodb");
+let uri = process.env.ATLAS_URI;
+
+const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+client.connect((err) => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -49,6 +61,6 @@ app.use(function (req, res, next) {
 app.use("/", indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 
-app.listen(3000, function () {
-  console.log("The CampBook Server Has Started!");
+app.listen(port, function () {
+  console.log(`The CampBook Server is running on port ${port}!`);
 });
